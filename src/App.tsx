@@ -19,7 +19,6 @@ const App = () => {
     { path: "*", element: <div>404</div> },
     { path: "/", element: <LandingPage /> },
     { path: "/login", element: <LoginPage /> },
-
     {
       path: "/app",
       element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "poll-watcher", "leadpollwatcher", "legalofficer"]} />,

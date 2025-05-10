@@ -8,14 +8,17 @@ export type Role =
   | "superadmin"
   | "legalofficer"
   | "leadpollwatcher"
+  | "user"
   | null;
 
 interface UserState {
+  id: number | null;
   email: string | null;
   firstName: string | null;
   lastName: string | null;
   role: Role;
   setUser: (user: {
+    id: number;
     email: string;
     firstName: string;
     lastName: string;
@@ -27,14 +30,21 @@ interface UserState {
 const useUserStore = create<UserState>()(
   persist(
     (set) => ({
+      id: null,
       email: null,
       firstName: null,
       lastName: null,
       role: null,
-      setUser: ({ email, firstName, lastName, role }) =>
-        set({ email, firstName, lastName, role }),
+      setUser: ({ email, firstName, lastName, role, id }) =>
+        set({ email, firstName, lastName, role, id }),
       clearUser: () =>
-        set({ email: null, firstName: null, lastName: null, role: null }),
+        set({
+          email: null,
+          firstName: null,
+          lastName: null,
+          role: null,
+          id: null,
+        }),
     }),
     {
       name: "user-store",

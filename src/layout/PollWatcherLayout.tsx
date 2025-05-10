@@ -2,7 +2,7 @@ import alert_logo from "@/assets/logo.png"
 import Tabs from '@/pages/poll-watcher/components/Tabs'
 import ElectionDay from "@/pages/poll-watcher/pages/ElectionDay";
 import MyAccount from "@/pages/poll-watcher/pages/MyAccount";
-import Reports from "@/pages/poll-watcher/pages/Reports";
+import Reports from "@/pages/admin/Reports";
 import { useTokenStore } from "@/store/useTokenStore";
 import useUserStore from "@/store/useUserStore";
 import { useState } from 'react';

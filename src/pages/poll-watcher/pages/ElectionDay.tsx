@@ -52,7 +52,7 @@ const ElectionDay = () => {
                             <StatusMark status="disabled" />
                         </div>
                         <div className="w-full flex items-center gap-1 lg:gap-4">
-                            <StatusButton label="Mayoral​" status={"not_submitted"} />
+                            <StatusButton label="Mayoral​" status={"not_submitted"} onClick={() => navigate("mayor-vice-mayor-er")}/>
                             <StatusMark status="not_submitted" />
                         </div>
                         <div className="w-full flex items-center gap-1 lg:gap-4">

@@ -15,6 +15,7 @@ import { Toaster } from 'sonner'
 import ProtectedRoute from "./route-handler/ProtectedRoute"
 import ERHeader from "./pages/poll-watcher/pages/ERHeader"
 import Home from "./pages/home/Home"
+import MayorViceMayor from "./pages/poll-watcher/pages/MayorViceMayor"
 
 const App = () => {
   const router = createBrowserRouter([
@@ -74,6 +75,10 @@ const App = () => {
                 {
                   path: "er-header",
                   element: <ERHeader />
+                },
+                {
+                  path: "mayor-vice-mayor-er",
+                  element: <MayorViceMayor />
                 }
               ]
             },

@@ -13,18 +13,12 @@ import SuperAdministratorLayout from "./layout/SuperAdministratorLayout"
 import LandingPage from "@/pages/LandingPage"
 import { Toaster } from 'sonner'
 import ProtectedRoute from "./route-handler/ProtectedRoute"
-import Report from "./pages/Report"
 
 const App = () => {
   const router = createBrowserRouter([
     { path: "*", element: <div>404</div> },
     { path: "/", element: <LandingPage /> },
     { path: "/login", element: <LoginPage /> },
-
-    {
-      path: "/report",
-      element: <Report />
-    },
     {
       path: "/app",
       element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "pollwatcher", "leadpollwatcher", "legalofficer"]} />,

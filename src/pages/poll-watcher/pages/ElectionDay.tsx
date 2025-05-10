@@ -42,18 +42,49 @@ const StatusMark = ({ status }: StatusProps) => {
 
 };
 
-const StatusButton = ({ label, status, disabled = false, onClick }: StatusButtonProps) => {
+
+const humanizeStatus = (status: string) => {
+    switch (status) {
+        case "submitted":
+            return "Submitted";
+        case "not_submitted":
+            return "Not Submitted";
+        case "disabled":
+            return "Disabled";
+        default:
+            return status;
+    }
+};
+
+const StatusButton = ({ label, status, onClick }: StatusButtonProps) => {
+    const isDisabled = status === "disabled";
+
+    let bgColor = "";
+    let statusColor = "";
+
+    switch (status) {
+        case "submitted":
+            bgColor = "bg-[#8ED973] hover:bg-[#7bc763]";
+            statusColor = "text-white";
+            break;
+        case "not_submitted":
+            bgColor = "bg-[#275317]";
+            statusColor = "text-[#FFD54F]";
+            break;
+        case "disabled":
+            bgColor = "bg-gray-300";
+            statusColor = "text-gray-600 opacity-60";
+            break;
+    }
+
     return (
         <button
             onClick={onClick}
-            disabled={disabled}
-            className={`
-        w-full flex flex-col p-2 rounded
-        ${disabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#8ED973] hover:bg-[#7bc763]'}
-      `}
+            disabled={isDisabled}
+            className={`w-full flex flex-col p-2 rounded transition-all ${bgColor} ${isDisabled ? 'cursor-not-allowed' : ''}`}
         >
             <span className="font-semibold text-white">{label}</span>
-            <span className="text-white">{status}</span>
+            <span className={`text-sm ${statusColor}`}>{humanizeStatus(status)}</span>
         </button>
     );
 };
@@ -64,7 +95,7 @@ const ElectionDay = () => {
 
     return (
         <div className="w-full p-2 lg:p-5">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4">
                 <h3 className="font-semibold text-xl">Select Precinct</h3>
                 <div>
                     <Select options={["A", "B", "C"]} />
@@ -75,7 +106,7 @@ const ElectionDay = () => {
                         {pollWatcherLabel.map((label, i) => (
                             <div key={i}>
                                 <p className="font-semibold">{label}:</p>
-                                <p className="bg-gray-200">{sampleValue[i]}</p>
+                                <p>{sampleValue[i]}</p>
                             </div>
                         ))}
                     </div>

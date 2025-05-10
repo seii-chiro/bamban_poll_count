@@ -52,7 +52,7 @@ const Select = ({
     return (
         <div
             ref={selectRef}
-            className={`relative w-64 ${className}`}
+            className={`relative ${className}`}
         >
             <motion.button
                 whileTap={disabled ? {} : { scale: 0.98 }}

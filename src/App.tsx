@@ -21,7 +21,7 @@ const App = () => {
     { path: "/login", element: <LoginPage /> },
     {
       path: "/app",
-      element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "pollwatcher", "leadpollwatcher", "legalofficer"]} />,
+      element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "poll-watcher", "leadpollwatcher", "legalofficer"]} />,
       children: [
         {
           element: <RootLayout />,
@@ -63,7 +63,7 @@ const App = () => {
             {
               path: "poll-watcher",
               element: (
-                <ProtectedRoute allowedRoles={["pollwatcher"]}>
+                <ProtectedRoute allowedRoles={["poll-watcher"]}>
                   <PollWatcherLayout />
                 </ProtectedRoute>
               ),

@@ -30,7 +30,6 @@ const sampleResults = [
     { position: "Vice Mayor", candidate: "Maria Santos", votes: 1130 },
     { position: "Councilor", candidate: "Pedro Reyes", votes: 890 },
 ];
-
 const Reports = () => {
     const [selectedPrecinctId, setSelectedPrecinctId] = useState(
         precinctData[0]?.precinct_id || ""

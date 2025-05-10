@@ -22,7 +22,7 @@ const App = () => {
 
     {
       path: "/app",
-      element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "pollwatcher", "leadpollwatcher", "legalofficer"]} />,
+      element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "poll-watcher", "leadpollwatcher", "legalofficer"]} />,
       children: [
         {
           element: <RootLayout />,

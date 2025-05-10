@@ -3,6 +3,11 @@ import PictureCard from "../components/PictureCard";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+import useUserStore from "@/store/useUserStore";
+import { useMutation } from "@tanstack/react-query";
+import { postERHeader } from "../queries";
+import { toast } from "sonner";
+import { useERHeaderStatusStore } from "@/store/useERHeaderStatusStore";
 
 export type ERHeader = {
     record_status_id?: null | number;
@@ -19,27 +24,52 @@ export type ERHeader = {
     pic3_path?: string;
     notes?: string;
     user: null | number;
+    latitude?: number | null;
+    longitude?: number | null;
 }
 
 const ERHeader = () => {
     const navigate = useNavigate()
-
+    const userId = useUserStore()?.id
     const [images, setImages] = useState<Record<number, string | null>>({});
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+    const { setERHeaderStatus, setVpsErHeader, setERHeaderSubmitted } = useERHeaderStatusStore()
 
     const [formData, setFormData] = useState<ERHeader>({
         pic1_b64: "",
         pic2_b64: "",
         pic3_b64: "",
-        clustered_prec: "",
+        clustered_prec: "test",
         no_ballots_casted: null,
         no_ballots_diverted: null,
         no_reg_voters: null,
         no_voters_voted: null,
-        user: null
+        user: null,
+        latitude: null,
+        longitude: null,
     })
 
-    console.log(formData)
+    useEffect(() => {
+        if (!navigator.geolocation) {
+            toast.error("Geolocation is not supported by your browser");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                setFormData(prev => ({
+                    ...prev,
+                    latitude: +latitude.toFixed(5),
+                    longitude: +longitude.toFixed(5)
+                }));
+            },
+            (error) => {
+                console.error("Geolocation error:", error);
+                toast.error("Failed to get your location");
+            }
+        );
+    }, []);
 
     useEffect(() => {
         const stripPrefix = (data: string | null): string =>
@@ -63,15 +93,35 @@ const ERHeader = () => {
         }
     }, [images]);
 
+    useEffect(() => {
+        if (userId) {
+            setFormData(prev => ({
+                ...prev,
+                user: userId
+            }))
+        }
+    }, [userId])
+
+    const submitMutation = useMutation({
+        mutationKey: ['submit', 'er-header'],
+        mutationFn: () => postERHeader(formData),
+        onSuccess: (data) => {
+            toast.success("Submitted!")
+            setERHeaderStatus("submitted")
+            setVpsErHeader(data?.id)
+            setERHeaderSubmitted(true)
+        },
+        onError: (err) => toast.error(err.message)
+    })
+
     const handleImageCaptured = (index: number, image: string | null) => {
         setImages(prev => ({ ...prev, [index]: image }));
     };
 
-    // Check if at least one image is available
     const hasAtLeastOneImage = Object.values(images).some(image => image !== null);
 
-    const pollWatcherLabel = ["Name", "Precinct ID", "ACM ID", "Province", "City/Municipality", "Barangay", "Polling Center", "Clustered Precinct", "Registered Voters"]
-    const sampleValue = ["Juan Dela Cruz​", "69020001", "69020001", "TARLAC", "BAMBAN", "ANUPUL", "BRGY. ANUPUL, BAMBAN, TARLAC​", "0001A, 0002A, 0003A", "685"]
+    const pollWatcherLabel = ["Precinct ID", "ACM ID", "Province", "City/Municipality", "Barangay", "Polling Center", "Clustered Precinct", "Registered Voters"]
+    const sampleValue = ["69020001", "69020001", "TARLAC", "BAMBAN", "ANUPUL", "BRGY. ANUPUL, BAMBAN, TARLAC​", "0001A, 0002A, 0003A", "685"]
 
     return (
         <div className='w-full flex flex-col gap-5 p-5'>
@@ -190,7 +240,11 @@ const ERHeader = () => {
                             />
                         </div>
 
-                        <button className="text-white font-semibold bg-[#275317] rounded text-lg py-2 cursor-pointer">Submit</button>
+                        <button
+                            onClick={() => submitMutation.mutate()}
+                            className="text-white font-semibold bg-[#275317] rounded text-lg py-2 cursor-pointer">
+                            Submit
+                        </button>
                     </div>
                 </div>
 

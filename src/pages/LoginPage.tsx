@@ -8,13 +8,13 @@ import { toast } from "sonner"
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import alert_logo from "@/assets/logo.png"
 
-async function loginUser(email: string, password: string) {
+async function loginUser({ email, password, latitude, longitude }: UserCredentials) {
     const response = await fetch(`${BASE_URL}/api/user/token/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, latitude, longitude }),
     });
 
     const data = await response.json();
@@ -41,26 +41,56 @@ async function getMe(token: string) {
     return userData;
 }
 
+type UserCredentials = {
+    email: string;
+    password: string;
+    latitude: number | null;
+    longitude: number | null;
+};
+
 const LoginPage = () => {
     const navigate = useNavigate()
     const { email, role, setUser } = useUserStore()
     const setToken = useTokenStore()?.setToken
     const [showPassword, setShowPassword] = useState(false)
-    const [userCredentials, setUserCredentials] = useState({
+    const [userCredentials, setUserCredentials] = useState<UserCredentials>({
         email: "",
-        password: ""
-    })
+        password: "",
+        latitude: null,
+        longitude: null,
+    });
     // Add a flag to prevent navigation loop
     const [hasRedirected, setHasRedirected] = useState(false)
 
+    useEffect(() => {
+        if (!navigator.geolocation) {
+            toast.error("Geolocation is not supported by your browser");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                setUserCredentials(prev => ({
+                    ...prev,
+                    latitude: latitude,
+                    longitude: longitude
+                }));
+            },
+            (error) => {
+                console.error("Geolocation error:", error);
+                toast.error("Failed to get your location");
+            }
+        );
+    }, []);
+
     const loginMutation = useMutation({
         mutationKey: ['login'],
-        mutationFn: ({ email, password }: { email: string; password: string }) => loginUser(email, password),
+        mutationFn: (credentials: UserCredentials) => loginUser(credentials),
         onSuccess: async (data) => {
             setToken(data.token);
             const res = await getMe(data.token);
 
-            // Get the first group as the role (if it exists)
             const role = res.groups?.[0] ?? null;
 
             setUser({
@@ -77,15 +107,14 @@ const LoginPage = () => {
             console.log(error)
             toast.error(error.message)
         }
-    })
+    });
 
-    const handleLogin = (e: { preventDefault: () => void; }) => {
-        e.preventDefault()
-        loginMutation.mutate({
-            email: userCredentials.email,
-            password: userCredentials.password
-        });
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        loginMutation.mutate(userCredentials);
     };
+
 
     const handleInputChange = (e: { target: { id: string; value: string; }; }) => {
         const { id, value } = e.target;

@@ -10,7 +10,7 @@ type TokenState = {
 export const useTokenStore = create<TokenState>()(
   persist(
     (set) => ({
-      token: "wqeqweqweqwewwq413123",
+      token: "",
       setToken: (token) => set({ token }),
       resetToken: () => set({ token: null }),
     }),

@@ -2,9 +2,12 @@ import Select from "@/components/Select"
 import StatusButton from "../components/StatusButton";
 import StatusMark from "../components/StatusMark";
 import { useNavigate } from "react-router";
+import { useERHeaderStatusStore } from "@/store/useERHeaderStatusStore";
+import clsx from "clsx"
 
 const ElectionDay = () => {
     const navigate = useNavigate()
+    const { erHeaderStatus, erHeaderSubmitted } = useERHeaderStatusStore()
 
     const pollWatcherLabel = ["Name", "Precinct ID", "ACM ID", "Province", "City/Municipality", "Barangay", "Polling Center", "Clustered Precinct", "Registered Voters"]
     const sampleValue = ["Juan Dela Cruz​", "69020001", "69020001", "TARLAC", "BAMBAN", "ANUPUL", "BRGY. ANUPUL, BAMBAN, TARLAC​", "0001A, 0002A, 0003A", "685"]
@@ -44,15 +47,15 @@ const ElectionDay = () => {
                 <div className="w-full">
                     <div className="w-full flex flex-col gap-1">
                         <div className="w-full flex items-center gap-1 lg:gap-4">
-                            <StatusButton label="Election Result (ER) Header​" status={"submitted"} onClick={() => navigate("er-header")} />
-                            <StatusMark status="submitted" />
+                            <StatusButton label="Election Result (ER) Header​" status={erHeaderStatus} onClick={() => navigate("er-header")} />
+                            <StatusMark status={erHeaderStatus} />
                         </div>
                         <div className="w-full flex items-center gap-1 lg:gap-4">
                             <StatusButton label="President​" status={"disabled"} />
                             <StatusMark status="disabled" />
                         </div>
-                        <div className="w-full flex items-center gap-1 lg:gap-4">
-                            <StatusButton label="Mayoral​" status={"not_submitted"} onClick={() => navigate("mayor-vice-mayor-er")}/>
+                        <div className={clsx('w-full flex items-center gap-1 lg:gap-4', erHeaderSubmitted ? '' : 'pointer-events-none cursor-not-allowed opacity-50')}>
+                            <StatusButton label="Mayoral​" status={"not_submitted"} onClick={() => navigate("mayor-vice-mayor-er")} />
                             <StatusMark status="not_submitted" />
                         </div>
                         <div className="w-full flex items-center gap-1 lg:gap-4">

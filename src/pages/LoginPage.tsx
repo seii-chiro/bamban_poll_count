@@ -92,7 +92,7 @@ const LoginPage = () => {
             case "admin":
             case "superadmin":
             case "candidate":
-            case "pollwatcher":
+            case "poll-watcher":
             case "leadpollwatcher":
             case "legalofficer":
                 setHasRedirected(true); // Prevent further redirects

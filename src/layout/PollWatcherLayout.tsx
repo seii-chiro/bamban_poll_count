@@ -13,7 +13,7 @@ const PollWatcherLayout = () => {
   return (
     <div className='w-full h-full'>
       <header className='flex p-2 border-b-2 border-gray-200'>
-        <div className='w-12 md:w-24'>
+        <div className='w-12 md:w-20'>
           <img src={alert_logo} alt="Tambuli Alert Logo" />
         </div>
         <div className='flex-grow flex justify-center items-center px-4'>

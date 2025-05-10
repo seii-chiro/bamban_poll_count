@@ -3,7 +3,7 @@ import { create } from "zustand";
 type Role =
   | "admin"
   | "candidate"
-  | "pollwatcher"
+  | "poll-watcher"
   | "superadmin"
   | "legalofficer"
   | "leadpollwatcher"
@@ -19,7 +19,7 @@ interface UserState {
 
 const useUserStore = create<UserState>((set) => ({
   username: "John",
-  role: "pollwatcher",
+  role: "poll-watcher",
   precinctDetails: null,
   setUser: (username, role) => set({ username, role }),
   clearUser: () => set({ username: null, role: null, precinctDetails: null }),

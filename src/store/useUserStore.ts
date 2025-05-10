@@ -37,7 +37,7 @@ const useUserStore = create<UserState>()(
         set({ email: null, firstName: null, lastName: null, role: null }),
     }),
     {
-      name: "user-store", // unique name in localStorage
+      name: "user-store",
     }
   )
 );

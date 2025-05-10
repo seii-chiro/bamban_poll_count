@@ -1,8 +1,11 @@
 import Select from "@/components/Select"
 import StatusButton from "../components/StatusButton";
 import StatusMark from "../components/StatusMark";
+import { useNavigate } from "react-router";
 
 const ElectionDay = () => {
+    const navigate = useNavigate()
+
     const pollWatcherLabel = ["Name", "Precinct ID", "ACM ID", "Province", "City/Municipality", "Barangay", "Polling Center", "Clustered Precinct", "Registered Voters"]
     const sampleValue = ["Juan Dela Cruz​", "69020001", "69020001", "TARLAC", "BAMBAN", "ANUPUL", "BRGY. ANUPUL, BAMBAN, TARLAC​", "0001A, 0002A, 0003A", "685"]
 
@@ -41,7 +44,7 @@ const ElectionDay = () => {
                 <div className="w-full">
                     <div className="w-full flex flex-col gap-1">
                         <div className="w-full flex items-center gap-1 lg:gap-4">
-                            <StatusButton label="Election Result (ER) Header​" status={"submitted"} />
+                            <StatusButton label="Election Result (ER) Header​" status={"submitted"} onClick={() => navigate("er-header")} />
                             <StatusMark status="submitted" />
                         </div>
                         <div className="w-full flex items-center gap-1 lg:gap-4">

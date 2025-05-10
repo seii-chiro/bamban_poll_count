@@ -1,6 +1,7 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-type Role =
+export type Role =
   | "admin"
   | "candidate"
   | "poll-watcher"
@@ -10,19 +11,35 @@ type Role =
   | null;
 
 interface UserState {
-  username: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
   role: Role;
-  precinctDetails: string | number | null;
-  setUser: (username: string, role: Role) => void;
+  setUser: (user: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: Role;
+  }) => void;
   clearUser: () => void;
 }
 
-const useUserStore = create<UserState>((set) => ({
-  username: "John",
-  role: "poll-watcher",
-  precinctDetails: null,
-  setUser: (username, role) => set({ username, role }),
-  clearUser: () => set({ username: null, role: null, precinctDetails: null }),
-}));
+const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      email: null,
+      firstName: null,
+      lastName: null,
+      role: null,
+      setUser: ({ email, firstName, lastName, role }) =>
+        set({ email, firstName, lastName, role }),
+      clearUser: () =>
+        set({ email: null, firstName: null, lastName: null, role: null }),
+    }),
+    {
+      name: "user-store", // unique name in localStorage
+    }
+  )
+);
 
 export default useUserStore;

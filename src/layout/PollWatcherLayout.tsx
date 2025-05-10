@@ -3,12 +3,26 @@ import Tabs from '@/pages/poll-watcher/components/Tabs'
 import ElectionDay from "@/pages/poll-watcher/pages/ElectionDay";
 import MyAccount from "@/pages/poll-watcher/pages/MyAccount";
 import Reports from "@/pages/poll-watcher/pages/Reports";
+import { useTokenStore } from "@/store/useTokenStore";
+import useUserStore from "@/store/useUserStore";
 import { useState } from 'react';
+import { Outlet, useLocation } from "react-router";
 
 const tabs = ['Election Day', 'Reports', 'My Account', 'Sign Out'];
 
 const PollWatcherLayout = () => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const clearToken = useTokenStore()?.resetToken
+  const clearUser = useUserStore()?.clearUser
+  const location = useLocation();
+
+  const isRootPollWatcher = location.pathname === "/app/poll-watcher";
+  const isNestedRoute = location.pathname !== "/app/poll-watcher";
+
+  const logout = () => {
+    clearToken()
+    clearUser()
+  }
 
   return (
     <div className='w-full h-full'>
@@ -19,26 +33,27 @@ const PollWatcherLayout = () => {
         <div className='flex-grow flex justify-center items-center px-4'>
           <Tabs
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            onLogout={() => {
-              console.log('User is logging out...');
-            }}
+            setActiveTab={isNestedRoute ? () => { } : setActiveTab}
+            onLogout={logout}
           />
-
         </div>
       </header>
 
       <main>
-        {
+        {isRootPollWatcher ? (
           activeTab === "Election Day" ? (
             <ElectionDay />
           ) : activeTab === "Reports" ? (
             <Reports />
-          ) : <MyAccount />
-        }
+          ) : (
+            <MyAccount />
+          )
+        ) : (
+          <Outlet />
+        )}
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default PollWatcherLayout

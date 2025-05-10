@@ -10,9 +10,9 @@ type ProtectedRouteProps = {
 
 const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     const token = useTokenStore()?.token
-    const { username, role } = useUserStore()
+    const { email, role } = useUserStore()
 
-    const isAuthenticated = Boolean(token && username && role)
+    const isAuthenticated = Boolean(token && email && role)
 
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />

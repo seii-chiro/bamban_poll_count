@@ -1,5 +1,5 @@
 import { useTokenStore } from "@/store/useTokenStore";
-import useUserStore from "@/store/useUserStore"
+import useUserStore, { type Role } from "@/store/useUserStore"
 import { BASE_URL } from "@/utils/url";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react"
@@ -8,13 +8,13 @@ import { toast } from "sonner"
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import alert_logo from "@/assets/logo.png"
 
-async function loginUser(username, password) {
-    const response = await fetch(`${BASE_URL}/api/token-auth/`, {
+async function loginUser(email: string, password: string) {
+    const response = await fetch(`${BASE_URL}/api/user/token/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
     });
 
     const data = await response.json();
@@ -31,8 +31,8 @@ async function loginUser(username, password) {
     return data;
 }
 
-async function getMe(token) {
-    const response = await fetch(`${BASE_URL}/api/me/`, {
+async function getMe(token: string) {
+    const response = await fetch(`${BASE_URL}/api/user/me/`, {
         headers: {
             Authorization: `Token ${token}`,
         },
@@ -43,11 +43,11 @@ async function getMe(token) {
 
 const LoginPage = () => {
     const navigate = useNavigate()
-    const { username, role, setUser } = useUserStore()
+    const { email, role, setUser } = useUserStore()
     const setToken = useTokenStore()?.setToken
     const [showPassword, setShowPassword] = useState(false)
     const [userCredentials, setUserCredentials] = useState({
-        username: "",
+        email: "",
         password: ""
     })
     // Add a flag to prevent navigation loop
@@ -55,12 +55,22 @@ const LoginPage = () => {
 
     const loginMutation = useMutation({
         mutationKey: ['login'],
-        mutationFn: ({ username, password }) => loginUser(username, password),
+        mutationFn: ({ email, password }: { email: string; password: string }) => loginUser(email, password),
         onSuccess: async (data) => {
             setToken(data.token);
             const res = await getMe(data.token);
-            setUser({ username: res.username, role: res.role });
-            res.role && toast.success(`Welcome ${res?.username}!`);
+
+            // Get the first group as the role (if it exists)
+            const role = res.groups?.[0] ?? null;
+
+            setUser({
+                email: res.email,
+                firstName: res.first_name,
+                lastName: res.last_name,
+                role: role as Role,
+            });
+
+            if (role) toast.success(`Welcome ${res.first_name || res.email}!`);
         },
         onError: (error) => {
             console.log(error)
@@ -71,7 +81,7 @@ const LoginPage = () => {
     const handleLogin = (e) => {
         e.preventDefault()
         loginMutation.mutate({
-            username: userCredentials.username,
+            email: userCredentials.email,
             password: userCredentials.password
         });
     };
@@ -80,13 +90,13 @@ const LoginPage = () => {
         const { id, value } = e.target;
         setUserCredentials(prev => ({
             ...prev,
-            [id === 'user-id' ? 'username' : 'password']: value
+            [id === 'user-id' ? 'email' : 'password']: value
         }));
     };
 
     useEffect(() => {
         // Only navigate if we have both username and role, and haven't redirected yet
-        if (!username || !role || hasRedirected) return;
+        if (!email || !role || hasRedirected) return;
 
         switch (role) {
             case "admin":
@@ -101,7 +111,7 @@ const LoginPage = () => {
             default:
                 toast.error("No valid role provided. Please contact your system admin.");
         }
-    }, [username, role, navigate, hasRedirected]);
+    }, [email, role, navigate, hasRedirected]);
 
     return (
         <div className="min-h-screen flex items-center justify-center p-2 lg:p-4 bg-gray-50 transition-all ease-in-out duration-200">
@@ -123,7 +133,7 @@ const LoginPage = () => {
                         <input
                             id="user-id"
                             type="text"
-                            value={userCredentials.username}
+                            value={userCredentials.email}
                             onChange={handleInputChange}
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#275317]"
                         />

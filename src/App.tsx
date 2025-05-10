@@ -13,6 +13,7 @@ import SuperAdministratorLayout from "./layout/SuperAdministratorLayout"
 import LandingPage from "@/pages/LandingPage"
 import { Toaster } from 'sonner'
 import ProtectedRoute from "./route-handler/ProtectedRoute"
+import ERHeader from "./pages/poll-watcher/pages/ERHeader"
 
 const App = () => {
   const router = createBrowserRouter([
@@ -67,6 +68,12 @@ const App = () => {
                   <PollWatcherLayout />
                 </ProtectedRoute>
               ),
+              children: [
+                {
+                  path: "er-header",
+                  element: <ERHeader />
+                }
+              ]
             },
             {
               path: "superadmin",

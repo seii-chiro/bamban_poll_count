@@ -3,7 +3,7 @@ import { create } from "zustand";
 type Role =
   | "admin"
   | "candidate"
-  | "pollwatcher"
+  | "poll-watcher"
   | "superadmin"
   | "legalofficer"
   | "leadpollwatcher"

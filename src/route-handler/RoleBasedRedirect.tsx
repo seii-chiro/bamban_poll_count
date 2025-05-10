@@ -21,7 +21,7 @@ const RoleBasedRedirect = () => {
             return <Navigate to="/app/lead-poll-watcher" replace />;
         case "legalofficer":
             return <Navigate to="/app/legal-officer" replace />;
-        case "pollwatcher":
+        case "poll-watcher":
             return <Navigate to="/app/poll-watcher" replace />;
         case "superadmin":
             return <Navigate to="/app/superadmin" replace />;

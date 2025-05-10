@@ -1,7 +1,7 @@
+import { getCandidate, getDashboardSummary } from "@/pages/admin/queries";
 import LogoutConfirmModal from "@/pages/poll-watcher/components/LogoutConfirm";
 import { useTokenStore } from "@/store/useTokenStore";
 import useUserStore from "@/store/useUserStore";
-import { BASE_URL } from "@/utils/url";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { FaUsers, FaUserCheck, FaVoteYea, FaUserClock, FaChartPie, FaUserShield } from "react-icons/fa";
@@ -11,35 +11,47 @@ const Administrator = () => {
     const clearToken = useTokenStore()?.resetToken
     const clearUser = useUserStore()?.clearUser
     const token = useTokenStore()?.token;
-
-    const fetchERHeader = async (token: string): Promise<ERHeaderPayload> => {
-        const response = await fetch(`${BASE_URL}/api/quick_count/vps_er_headers/`, {
-            headers: {
-                Authorization: `Token ${token}`,
-            },
-        });
-        return response.json();
-    };
     
-    const { data: erHeader } = useQuery({
-        queryKey: ["erHeader"],
-        queryFn: () => fetchERHeader(token ?? ''),
+    const { data: dashboardSummary, isLoading: erLoading, isError: erError } = useQuery({
+        queryKey: ["dashboard-summary"],
+        queryFn: () => getDashboardSummary(token ?? ''),
         enabled: !!token,
     });
 
-    const ballotsCasted = erHeader?.no_ballots_casted || 0;    
-    const totalVoters = Number(erHeader?.no_reg_voters) || 1;
-    const votersVoted = Number(erHeader?.no_voters_voted) || 0; 
-    const percentage = ((ballotsCasted / totalVoters) * 100).toFixed(2);
-    const votesPercentage = ((votersVoted / totalVoters) * 100).toFixed(2);
+    const { data: candidates } = useQuery({
+        queryKey: ["candidates"],
+        queryFn: () => getCandidate(token ?? ''),
+        enabled: !!token,
+    });
+
+    if (erLoading) return <div>Loading dashboard...</div>;
+    if (erError) return <div>Error loading dashboard.</div>;
+
+    const ballotsCasted = dashboardSummary?.total_no_ballots_casted || 0;    
+    const votersVoted = (dashboardSummary?.total_no_voters_voted) || 0; 
+    
+    const totalVoters = dashboardSummary?.total_voters ?? 0;
+
+    const percentage = totalVoters > 0
+    ? ((ballotsCasted / totalVoters) * 100).toFixed(2)
+    : "0.00";
+
+    const votesPercentage = totalVoters > 0
+    ? ((votersVoted / totalVoters) * 100).toFixed(2)
+    : "0.00";
+
 
     const cardData = [
-        { title: "Total No. of Precincts", value: erHeader?.clustered_prec || 0, icon: <FaUsers size={30} />, bg: "#51A434" },
-        { title: "Total No. of Voters", value: erHeader?.no_reg_voters || 0, icon: <FaVoteYea size={30} />, bg: "#275316" },
-        { title: "Total No. of Poll Watchers", value: 1491, icon: <FaUserClock size={30} />, bg: "#51A434" },
+        { title: "Total No. of Precincts", value: dashboardSummary?.total_precincts || 0, icon: <FaUsers size={30} />, bg: "#51A434" },
+        { title: "Total No. of Voters", value: totalVoters || 0, icon: <FaVoteYea size={30} />, bg: "#275316" },
+        {
+        title: "Total No. of Poll Watchers", value: dashboardSummary?.total_poll_watchers || 0,
+        icon: <FaUserClock size={30} />,
+        bg: "#51A434",
+        },
         { title: "Percentage of Votes Counted", value: `${votesPercentage}%`, icon: <FaUserCheck size={30} />, bg: "#275316" },
-        { title: "Total Uploadeds/Submissions", value: erHeader?.id || 0, icon: <FaChartPie size={30} />, bg: "#51A434" },
-        { title: "No. of Voters who Voted", value: erHeader?.no_voters_voted || 0, icon: <FaUserShield size={30} />, bg: "#275316" },
+        { title: "Total Uploadeds/Submissions", value: dashboardSummary?.total_poll_watchers || 0, icon: <FaChartPie size={30} />, bg: "#51A434" },// note: replace with the total submission
+        { title: "No. of Voters who Voted", value: dashboardSummary?.total_no_voters_voted || 0, icon: <FaUserShield size={30} />, bg: "#275316" },
         { title: "No. of Ballots Casted", value: ballotsCasted, icon: <FaUserShield size={30} />, bg: "#51A434" },
         { title: "Percentage of Ballots Casted", value: `${percentage}%`, icon: <FaUserShield size={30} />, bg: "#275316" },
     ];
@@ -50,10 +62,7 @@ const Administrator = () => {
         { candidate: "Candidate C", percent: 10, votes: 2345 },
     ];
 
-    const totalVotes = sampleResults.reduce((sum, item) => sum + item.votes, 0);
-    const totalPercent = sampleResults.reduce((sum, item) => sum + item.percent, 0);
-
-      const logout = () => {
+    const logout = () => {
         clearToken()
         clearUser()
     }
@@ -111,20 +120,39 @@ const Administrator = () => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {sampleResults.map((item, index) => (
-                                    <tr key={index} className=" hover:bg-[#D9F2D0]">
-                                    <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{index + 1}</td>
-                                    <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{item.candidate}</td>
-                                    <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{item.percent || '-'}</td>
-                                    <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">{item.votes}</td>
-                                    </tr>
-                                ))}
+                                    {candidates?.filter(item => item.contest_code.toString().padStart(8, '0') === "00869020")
+                                    ?.length ? (
+                                        candidates
+                                        .filter(item => item.contest_code.toString().padStart(8, '0') === "00869020")
+                                        .map((item, index) => (
+                                            <tr key={index} className="hover:bg-[#D9F2D0]">
+                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                {index + 1}
+                                            </td>
+                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                {item.candidate_name}
+                                            </td>
+                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                -
+                                            </td>
+                                            <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">
+                                                -
+                                            </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                        <td colSpan={4} className="text-center text-gray-500 py-4">
+                                            No candidates available for Mayor of Tarlac.
+                                        </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                                 <tfoot>
                                     <tr className="bg-[#275316] text-white font-semibold">
                                         <td colSpan={2} className="px-2 py-3 border-r border-b border-gray-300 font-bold text-right">Total</td>
-                                        <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{totalPercent}%</td>
-                                        <td className="px-4 py-3 border-b border-gray-300  font-semibold text-center">{totalVotes}</td>
+                                        <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">-</td>
+                                        <td className="px-4 py-3 border-b border-gray-300  font-semibold text-center">-</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -144,21 +172,38 @@ const Administrator = () => {
                                     <th className="px-4 py-2 cursor-pointer">Votes</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                {sampleResults.map((item, index) => (
-                                    <tr key={index} className="hover:bg-[#D9F2D0]">
-                                    <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{index + 1}</td>
-                                    <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{item.candidate}</td>
-                                    <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{item.percent || '-'}</td>
-                                    <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">{item.votes}</td>
-                                    </tr>
-                                ))}
-                                </tbody>
+                                {candidates?.filter(item => item.contest_code.toString().padStart(8, '0') === "00969020")
+                                    ?.length ? (
+                                        candidates
+                                        .filter(item => item.contest_code.toString().padStart(8, '0') === "00969020")
+                                        .map((item, index) => (
+                                            <tr key={index} className="hover:bg-[#D9F2D0]">
+                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                {index + 1}
+                                            </td>
+                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                {item.candidate_name}
+                                            </td>
+                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                -
+                                            </td>
+                                            <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">
+                                                -
+                                            </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                        <td colSpan={4} className="text-center text-gray-500 py-4">
+                                            No candidates available for Vice-Mayor of Tarlac.
+                                        </td>
+                                        </tr>
+                                    )}
                                 <tfoot>
                                     <tr className="bg-[#275316] text-white font-semibold">
                                         <td colSpan={2} className="px-2 py-3 border-r border-b border-gray-300 font-bold text-right">Total</td>
-                                        <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">{totalPercent}%</td>
-                                        <td className="px-4 py-3 border-b border-gray-300  font-semibold text-center">{totalVotes}</td>
+                                        <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">-</td>
+                                        <td className="px-4 py-3 border-b border-gray-300  font-semibold text-center">-</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -169,8 +214,7 @@ const Administrator = () => {
             
             {/* Table 3 */}
             <div className="mt-10">
-                <h1 className="my-2 text-lg md:text-2xl font-bold text-[#333]">Last 10 Poll Watchers' Submissions
-</h1>
+                <h1 className="my-2 text-lg md:text-2xl font-bold text-[#333]">Last 10 Poll Watchers' Submissions</h1>
                 <div className="bg-white p-4 md:p-8 rounded-lg shadow-2xs border border-gray-300">
                     <div className="overflow-x-auto">
                         <table className="w-full table-auto text-sm text-left">
@@ -192,6 +236,13 @@ const Administrator = () => {
                                 </tr>
                             ))}
                             </tbody>
+                            <tfoot>
+                                <tr className="bg-[#275316] text-white font-semibold">
+                                    <td colSpan={2} className="px-2 py-3 border-r border-b border-gray-300 font-bold text-right">Total</td>
+                                    <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">-</td>
+                                    <td className="px-4 py-3 border-b border-gray-300  font-semibold text-center">-</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

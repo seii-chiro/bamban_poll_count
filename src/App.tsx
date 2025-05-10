@@ -14,12 +14,14 @@ import LandingPage from "@/pages/LandingPage"
 import { Toaster } from 'sonner'
 import ProtectedRoute from "./route-handler/ProtectedRoute"
 import ERHeader from "./pages/poll-watcher/pages/ERHeader"
+import Home from "./pages/home/Home"
 
 const App = () => {
   const router = createBrowserRouter([
     { path: "*", element: <div>404</div> },
     { path: "/", element: <LandingPage /> },
     { path: "/login", element: <LoginPage /> },
+    { path: "/home", element: <Home /> },
     {
       path: "/app",
       element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "poll-watcher", "leadpollwatcher", "legalofficer"]} />,

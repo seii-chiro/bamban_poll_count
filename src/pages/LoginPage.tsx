@@ -64,6 +64,7 @@ const LoginPage = () => {
             const role = res.groups?.[0] ?? null;
 
             setUser({
+                id: res.id,
                 email: res.email,
                 firstName: res.first_name,
                 lastName: res.last_name,
@@ -78,7 +79,7 @@ const LoginPage = () => {
         }
     })
 
-    const handleLogin = (e) => {
+    const handleLogin = (e: { preventDefault: () => void; }) => {
         e.preventDefault()
         loginMutation.mutate({
             email: userCredentials.email,
@@ -86,7 +87,7 @@ const LoginPage = () => {
         });
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: { target: { id: string; value: string; }; }) => {
         const { id, value } = e.target;
         setUserCredentials(prev => ({
             ...prev,

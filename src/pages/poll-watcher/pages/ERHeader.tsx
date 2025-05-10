@@ -4,11 +4,56 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 
+export type ERHeader = {
+    record_status_id?: null | number;
+    clustered_prec: string;
+    no_reg_voters: null | number;
+    no_voters_voted: null | number;
+    no_ballots_casted: null | number;
+    no_ballots_diverted: null | number;
+    pic1_b64: string;
+    pic1_path?: string;
+    pic2_b64: string;
+    pic2_path?: string;
+    pic3_b64: string;
+    pic3_path?: string;
+    notes?: string;
+    user: null | number;
+}
+
 const ERHeader = () => {
     const navigate = useNavigate()
 
     const [images, setImages] = useState<Record<number, string | null>>({});
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+    const [formData, setFormData] = useState<ERHeader>({
+        pic1_b64: "",
+        pic2_b64: "",
+        pic3_b64: "",
+        clustered_prec: "",
+        no_ballots_casted: null,
+        no_ballots_diverted: null,
+        no_reg_voters: null,
+        no_voters_voted: null,
+        user: null
+    })
+
+    console.log(formData)
+
+    useEffect(() => {
+        const stripPrefix = (data: string | null): string =>
+            typeof data === "string"
+                ? data.replace(/^data:image\/\w+;base64,/, "")
+                : "";
+
+        setFormData(prev => ({
+            ...prev,
+            pic1_b64: stripPrefix(images[0]),
+            pic2_b64: stripPrefix(images[1]),
+            pic3_b64: stripPrefix(images[2]),
+        }));
+    }, [images]);
 
     useEffect(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -110,19 +155,39 @@ const ERHeader = () => {
                     <div className="flex-1 flex flex-col gap-3">
                         <div className="flex flex-col gap-1 lg:flex-row lg:justify-between lg:items-center">
                             <p className="bg-[#D9F2D0] font-semibold py-2 px-4 rounded">No. of Registered Voters</p>
-                            <p className="p-1 border-2 border-gray-300 rounded lg:min-w-20">0</p>
+                            <input
+                                type="number"
+                                value={formData.no_reg_voters ?? ""}
+                                onChange={(e) => setFormData({ ...formData, no_reg_voters: parseInt(e.target.value) || 0 })}
+                                className="p-1 border-2 border-gray-300 rounded lg:min-w-20"
+                            />
                         </div>
                         <div className="flex flex-col gap-1 lg:flex-row lg:justify-between lg:items-center">
                             <p className="bg-[#D9F2D0] font-semibold py-2 px-4 rounded">No. of Voters who Voted</p>
-                            <p className="p-1 border-2 border-gray-300 rounded lg:min-w-20">0</p>
+                            <input
+                                type="number"
+                                value={formData.no_voters_voted ?? ""}
+                                onChange={(e) => setFormData({ ...formData, no_voters_voted: parseInt(e.target.value) || 0 })}
+                                className="p-1 border-2 border-gray-300 rounded lg:min-w-20"
+                            />
                         </div>
                         <div className="flex flex-col gap-1 lg:flex-row lg:justify-between lg:items-center">
                             <p className="bg-[#D9F2D0] font-semibold py-2 px-4 rounded">No. of Ballots Cast</p>
-                            <p className="p-1 border-2 border-gray-300 rounded lg:min-w-20">0</p>
+                            <input
+                                type="number"
+                                value={formData.no_ballots_casted ?? ""}
+                                onChange={(e) => setFormData({ ...formData, no_ballots_casted: parseInt(e.target.value) || 0 })}
+                                className="p-1 border-2 border-gray-300 rounded lg:min-w-20"
+                            />
                         </div>
                         <div className="flex flex-col gap-1 lg:flex-row lg:justify-between lg:items-center">
                             <p className="bg-[#D9F2D0] font-semibold py-2 px-4 rounded">No. of Ballots Delivered</p>
-                            <p className="p-1 border-2 border-gray-300 rounded lg:min-w-20">0</p>
+                            <input
+                                type="number"
+                                value={formData.no_ballots_diverted ?? ""}
+                                onChange={(e) => setFormData({ ...formData, no_ballots_diverted: parseInt(e.target.value) || 0 })}
+                                className="p-1 border-2 border-gray-300 rounded lg:min-w-20"
+                            />
                         </div>
 
                         <button className="text-white font-semibold bg-[#275317] rounded text-lg py-2 cursor-pointer">Submit</button>

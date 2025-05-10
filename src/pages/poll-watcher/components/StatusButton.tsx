@@ -43,7 +43,7 @@ const StatusButton = ({ label, status, onClick }: StatusButtonProps) => {
         <button
             onClick={onClick}
             disabled={isDisabled}
-            className={`w-full flex flex-col p-2 rounded transition-all ${bgColor} ${isDisabled ? 'cursor-not-allowed' : ''}`}
+            className={`w-full flex flex-col p-2 rounded transition-all ${bgColor} ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
         >
             <span className="font-semibold text-white">{label}</span>
             <span className={`text-sm ${statusColor}`}>{humanizeStatus(status)}</span>

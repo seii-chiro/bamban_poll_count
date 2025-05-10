@@ -57,19 +57,11 @@ const NameCountHelper = ({
 const MayorViceMayor = () => {
     const navigate = useNavigate()
 
-    const [images, setImages] = useState<Record<number, string | null>>({});
-    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+    const [imagesMayor, setImagesMayor] = useState<Record<number, string | null>>({});
+    const [imagesVice, setImagesVice] = useState<Record<number, string | null>>({});
 
-    useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const filledEntries = Object.entries(images).filter(([_, img]) => img !== null);
-        if (filledEntries.length === 1) {
-            setSelectedImageIndex(Number(filledEntries[0][0]));
-        }
-    }, [images]);
-
-    const handleImageCaptured = (index: number, image: string | null) => {
-        setImages(prev => ({ ...prev, [index]: image }));
+    const handleImageMayorCaptured = (index: number, image: string | null) => {
+        setImagesMayor(prev => ({ ...prev, [index]: image }));
     };
 
     return (
@@ -97,13 +89,11 @@ const MayorViceMayor = () => {
                     <div className="w-full flex flex-col lg:flex-row gap-4">
                         {[0, 1, 2].map(index => (
                             <div
-                                className={`flex-1 border-2 rounded-xl transition-all duration-200 ${selectedImageIndex === index ? 'border-green-400' : 'border-transparent'
-                                    }`}
+                                className={`flex-1 border-2 rounded-xl transition-all duration-200`}
                                 key={index}
-                                onClick={() => images[index] && setSelectedImageIndex(index)}
                             >
                                 <PictureCard
-                                    onCapture={handleImageCaptured}
+                                    onCapture={handleImageMayorCaptured}
                                     index={index}
                                 />
                             </div>

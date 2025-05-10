@@ -3,6 +3,10 @@ import PictureCard from "../components/PictureCard";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+import useUserStore from "@/store/useUserStore";
+import { useMutation } from "@tanstack/react-query";
+import { postERHeader } from "../queries";
+import { toast } from "sonner";
 
 export type ERHeader = {
     record_status_id?: null | number;
@@ -23,7 +27,7 @@ export type ERHeader = {
 
 const ERHeader = () => {
     const navigate = useNavigate()
-
+    const userId = useUserStore()?.id
     const [images, setImages] = useState<Record<number, string | null>>({});
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
@@ -31,15 +35,13 @@ const ERHeader = () => {
         pic1_b64: "",
         pic2_b64: "",
         pic3_b64: "",
-        clustered_prec: "",
+        clustered_prec: "test",
         no_ballots_casted: null,
         no_ballots_diverted: null,
         no_reg_voters: null,
         no_voters_voted: null,
         user: null
     })
-
-    console.log(formData)
 
     useEffect(() => {
         const stripPrefix = (data: string | null): string =>
@@ -62,6 +64,22 @@ const ERHeader = () => {
             setSelectedImageIndex(Number(filledEntries[0][0]));
         }
     }, [images]);
+
+    useEffect(() => {
+        if (userId) {
+            setFormData(prev => ({
+                ...prev,
+                user: userId
+            }))
+        }
+    }, [userId])
+
+    const submitMutation = useMutation({
+        mutationKey: ['submit', 'er-header'],
+        mutationFn: () => postERHeader(formData),
+        onSuccess: () => toast.success("Summitted!"),
+        onError: (err) => toast.error(err.message)
+    })
 
     const handleImageCaptured = (index: number, image: string | null) => {
         setImages(prev => ({ ...prev, [index]: image }));
@@ -190,7 +208,11 @@ const ERHeader = () => {
                             />
                         </div>
 
-                        <button className="text-white font-semibold bg-[#275317] rounded text-lg py-2 cursor-pointer">Submit</button>
+                        <button
+                            onClick={() => submitMutation.mutate()}
+                            className="text-white font-semibold bg-[#275317] rounded text-lg py-2 cursor-pointer">
+                            Submit
+                        </button>
                     </div>
                 </div>
 

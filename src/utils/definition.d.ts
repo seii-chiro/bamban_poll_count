@@ -44,6 +44,24 @@ export interface Candidate {
     contest_code: number;
     contest: Contest;
 }
+export type ClusteredPrecinct = {
+    id: number;
+    created_by: string;
+    updated_by: string;
+    record_status: string;
+    created_at: string; // ISO datetime string
+    updated_at: string; // ISO datetime string
+    acm_id: number;
+    reg_name: string;
+    prv_name: string;
+    mun_name: string;
+    brgy_name: string;
+    pollplace: string;
+    clustered_prec: string;
+    registered_voters: number;
+    notes: string;
+};
+
 export type User = {
     id: number;
     email: string;
@@ -51,8 +69,10 @@ export type User = {
     last_name: string;
     groups: string[];
     user_permissions: string[];
-    all_permissions: string;
+  all_permissions: string; // still a string based on latest JSON
+  clusterd_prec: ClusteredPrecinct; // nested object
 };
+
 
 export interface Precinct {
     id: number;

@@ -58,7 +58,7 @@ export const getDashboardSummary = async (token: string): Promise<DashboardSumma
     return response.json();
 };
 
-export const getResult = async (token: string): Promise<Result> => {
+export const getResult = async (token: string): Promise<Result[]> => {
     const response = await fetch(`${BASE_URL}/api/quick_count/results/`, {
         headers: {
             Authorization: `Token ${token}`,

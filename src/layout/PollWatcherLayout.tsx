@@ -2,11 +2,11 @@ import alert_logo from "@/assets/logo.png"
 import Tabs from '@/pages/poll-watcher/components/Tabs'
 import ElectionDay from "@/pages/poll-watcher/pages/ElectionDay";
 import MyAccount from "@/pages/poll-watcher/pages/MyAccount";
-import Reports from "@/pages/admin/Reports";
 import { useTokenStore } from "@/store/useTokenStore";
 import useUserStore from "@/store/useUserStore";
 import { useState } from 'react';
 import { Outlet, useLocation } from "react-router";
+import ReportPollWatcher from "@/pages/poll-watcher/pages/ReportPollWatcher";
 
 const tabs = ['Election Day', 'Reports', 'My Account', 'Sign Out'];
 
@@ -44,7 +44,7 @@ const PollWatcherLayout = () => {
           activeTab === "Election Day" ? (
             <ElectionDay />
           ) : activeTab === "Reports" ? (
-            <Reports />
+            <ReportPollWatcher />
           ) : (
             <MyAccount />
           )

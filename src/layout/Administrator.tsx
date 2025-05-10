@@ -1,4 +1,4 @@
-import { getCandidate, getDashboardSummary } from "@/pages/admin/queries";
+import { getCandidate, getDashboardSummary, getResult } from "@/pages/admin/queries";
 import LogoutConfirmModal from "@/pages/poll-watcher/components/LogoutConfirm";
 import { useTokenStore } from "@/store/useTokenStore";
 import useUserStore from "@/store/useUserStore";
@@ -24,6 +24,29 @@ const Administrator = () => {
         enabled: !!token,
     });
 
+    const { data: results } = useQuery({
+        queryKey: ["results"],
+        queryFn: () => getResult(token ?? ''),
+        enabled: !!token,
+    });
+
+    const getVotesByCandidateName = (name: string): number => {
+        const result = results?.find(
+            (res) => res.candidate_name === name
+        );
+        return result?.number_voters || 0;
+    };
+
+    const filteredCandidates = candidates?.filter(
+        item => item.contest_code.toString().padStart(8, '0') === "00869020"
+    );
+
+    const totalVotes = filteredCandidates?.reduce((sum, candidate) => {
+        const votes = results?.find(result => result.candidate_name === candidate.candidate_name)?.number_voters || 0;
+        return sum + votes;
+    }, 0) || 0;
+
+
     if (erLoading) return <div>Loading dashboard...</div>;
     if (erError) return <div>Error loading dashboard.</div>;
 
@@ -42,17 +65,17 @@ const Administrator = () => {
 
 
     const cardData = [
-        { title: "Total No. of Precincts", value: dashboardSummary?.total_precincts || 0, icon: <FaUsers size={30} />, bg: "#51A434" },
-        { title: "Total No. of Voters", value: totalVoters || 0, icon: <FaVoteYea size={30} />, bg: "#275316" },
+        { title: "Total No. of Precincts", value: dashboardSummary?.total_precincts.toLocaleString() || "0", icon: <FaUsers size={30} />, bg: "#51A434" },
+        { title: "Total No. of Voters", value: totalVoters.toLocaleString() || "0", icon: <FaVoteYea size={30} />, bg: "#275316" },
         {
-        title: "Total No. of Poll Watchers", value: dashboardSummary?.total_poll_watchers || 0,
+        title: "Total No. of Poll Watchers", value: dashboardSummary?.total_poll_watchers.toLocaleString() || "0",
         icon: <FaUserClock size={30} />,
         bg: "#51A434",
         },
         { title: "Percentage of Votes Counted", value: `${votesPercentage}%`, icon: <FaUserCheck size={30} />, bg: "#275316" },
-        { title: "Total Uploadeds/Submissions", value: dashboardSummary?.total_poll_watchers || 0, icon: <FaChartPie size={30} />, bg: "#51A434" },// note: replace with the total submission
-        { title: "No. of Voters who Voted", value: dashboardSummary?.total_no_voters_voted || 0, icon: <FaUserShield size={30} />, bg: "#275316" },
-        { title: "No. of Ballots Casted", value: ballotsCasted, icon: <FaUserShield size={30} />, bg: "#51A434" },
+        { title: "Total Uploadeds/Submissions", value: dashboardSummary?.total_poll_watchers.toLocaleString() || "0", icon: <FaChartPie size={30} />, bg: "#51A434" },// note: replace with the total submission
+        { title: "No. of Voters who Voted", value: dashboardSummary?.total_no_voters_voted.toLocaleString() || "0", icon: <FaUserShield size={30} />, bg: "#275316" },
+        { title: "No. of Ballots Casted", value: ballotsCasted.toLocaleString() || "0", icon: <FaUserShield size={30} />, bg: "#51A434" },
         { title: "Percentage of Ballots Casted", value: `${percentage}%`, icon: <FaUserShield size={30} />, bg: "#275316" },
     ];
 
@@ -120,24 +143,23 @@ const Administrator = () => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    {candidates?.filter(item => item.contest_code.toString().padStart(8, '0') === "00869020")
-                                    ?.length ? (
+                                    {candidates?.filter(item => item.contest_code.toString().padStart(8, '0') === "00869020")?.length ? (
                                         candidates
                                         .filter(item => item.contest_code.toString().padStart(8, '0') === "00869020")
                                         .map((item, index) => (
                                             <tr key={index} className="hover:bg-[#D9F2D0]">
-                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                {index + 1}
-                                            </td>
-                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                {item.candidate_name}
-                                            </td>
-                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                -
-                                            </td>
-                                            <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">
-                                                -
-                                            </td>
+                                                <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                    {index + 1}
+                                                </td>
+                                                <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                    {item.candidate_name}
+                                                </td>
+                                                <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">
+                                                    -
+                                                </td>
+                                                <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                    {getVotesByCandidateName(item.candidate_name).toLocaleString()}
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
@@ -152,7 +174,9 @@ const Administrator = () => {
                                     <tr className="bg-[#275316] text-white font-semibold">
                                         <td colSpan={2} className="px-2 py-3 border-r border-b border-gray-300 font-bold text-right">Total</td>
                                         <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">-</td>
-                                        <td className="px-4 py-3 border-b border-gray-300  font-semibold text-center">-</td>
+                                        <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">
+                                            {totalVotes.toLocaleString()}
+                                        </td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -178,18 +202,18 @@ const Administrator = () => {
                                         .filter(item => item.contest_code.toString().padStart(8, '0') === "00969020")
                                         .map((item, index) => (
                                             <tr key={index} className="hover:bg-[#D9F2D0]">
-                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                {index + 1}
-                                            </td>
-                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                {item.candidate_name}
-                                            </td>
-                                            <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                -
-                                            </td>
-                                            <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">
-                                                -
-                                            </td>
+                                                <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                    {index + 1}
+                                                </td>
+                                                <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                    {item.candidate_name}
+                                                </td>
+                                                <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                    -
+                                                </td>
+                                                <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
+                                                    {getVotesByCandidateName(item.candidate_name).toLocaleString()}
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
@@ -203,7 +227,9 @@ const Administrator = () => {
                                     <tr className="bg-[#275316] text-white font-semibold">
                                         <td colSpan={2} className="px-2 py-3 border-r border-b border-gray-300 font-bold text-right">Total</td>
                                         <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">-</td>
-                                        <td className="px-4 py-3 border-b border-gray-300  font-semibold text-center">-</td>
+                                        <td className="px-4 py-3 border-b border-gray-300 font-semibold text-center">
+                                            {totalVotes.toLocaleString()}
+                                        </td>
                                     </tr>
                                 </tfoot>
                             </table>

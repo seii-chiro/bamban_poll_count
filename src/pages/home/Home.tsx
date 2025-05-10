@@ -15,8 +15,8 @@ type Card = {
 const sampleCards: Card[] = [
     { id: 1, title: "Dashboard", image: statistics, path: "/app/admin" },
     { id: 2, title: "Map", image: map, path: "/map" },
-    { id: 3, title: "Users", image: "", path: "/users" },
-    { id: 4, title: "Roles", image: "", path: "/roles" },
+    { id: 3, title: "Users", image: user, path: "/users" },
+    { id: 4, title: "Roles", image: roles, path: "/roles" },
     { id: 5, title: "Election Results", image: "https://via.placeholder.com/300x200", path: "/results" },
     { id: 6, title: "Settings", image: "https://via.placeholder.com/300x200", path: "/settings" },
     { id: 7, title: "Precincts", image: "https://via.placeholder.com/300x200", path: "/precincts" },

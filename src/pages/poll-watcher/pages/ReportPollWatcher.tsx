@@ -33,6 +33,7 @@ const ReportPollWatcher = () => {
                 <h1 className="md:text-lg mb-2 font-semibold">Select Precinct</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
                     <select
+                        disabled
                         className="w-full md:col-span-2 border border-gray-300 rounded-md px-4 py-2 text-gray-500 shadow-2xs focus:outline-none"
                         value={selectedPollWatcher}
                         onChange={(e) => setSelectedPollWatcher(e.target.value)}

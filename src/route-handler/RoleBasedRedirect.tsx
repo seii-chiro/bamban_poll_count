@@ -1,20 +1,21 @@
+import useUserStore from "@/store/useUserStore"
 import { Navigate } from "react-router"
 
 const RoleBasedRedirect = () => {
-    const role = "Administrator"
+    const role = useUserStore()?.role
 
     switch (role) {
-        case "Administrator":
+        case "admin":
             return <Navigate to="/admin" replace />
-        case "Candidate":
+        case "candidate":
             return <Navigate to="/candidate" replace />
-        case "LeadPollWatcher":
+        case "leadpollwatcher":
             return <Navigate to="/lead-poll-watcher" replace />
-        case "LegalOfficer":
+        case "legalofficer":
             return <Navigate to="/legal-officer" replace />
-        case "PollWatcher":
+        case "pollwatcher":
             return <Navigate to="/poll-watcher" replace />
-        case "SuperAdministrator":
+        case "superadmin":
             return <Navigate to="/superadmin" replace />
         default:
             return <Navigate to="/login" replace />

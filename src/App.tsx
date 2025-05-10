@@ -10,7 +10,7 @@ import LeadPollWatcherLayout from "./layout/LeadPollWatcherLayout"
 import LegalOfficer from "./layout/LegalOfficer"
 import PollWatcherLayout from "./layout/PollWatcherLayout"
 import SuperAdministratorLayout from "./layout/SuperAdministratorLayout"
-import LandingPage from "@/pages/LandingPage" // <- You’ll need to create this
+import LandingPage from "@/pages/LandingPage"
 
 const App = () => {
   const router = createBrowserRouter([
@@ -20,7 +20,7 @@ const App = () => {
     },
     {
       path: "/",
-      element: <LandingPage /> 
+      element: <LandingPage />
     },
     {
       path: "/login",
@@ -28,34 +28,34 @@ const App = () => {
     },
     {
       path: "/app",
-      element: <RootLayout />, 
+      element: <RootLayout />,
       children: [
         {
           index: true,
           element: <RoleBasedRedirect />
         },
         {
-          path: "admin/*",
+          path: "admin",
           element: <Administrator />
         },
         {
-          path: "candidate/*",
+          path: "candidate",
           element: <Candidate />
         },
         {
-          path: "lead-poll-watcher/*",
+          path: "lead-poll-watcher",
           element: <LeadPollWatcherLayout />
         },
         {
-          path: "legal-officer/*",
+          path: "legal-officer",
           element: <LegalOfficer />
         },
         {
-          path: "poll-watcher/*",
+          path: "poll-watcher",
           element: <PollWatcherLayout />
         },
         {
-          path: "superadmin/*",
+          path: "superadmin",
           element: <SuperAdministratorLayout />
         },
       ]

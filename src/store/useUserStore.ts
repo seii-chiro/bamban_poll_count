@@ -17,8 +17,8 @@ interface UserState {
 }
 
 const useUserStore = create<UserState>((set) => ({
-  username: null,
-  role: null,
+  username: "John",
+  role: "admin",
   setUser: (username, role) => set({ username, role }),
   clearUser: () => set({ username: "", role: null }),
 }));

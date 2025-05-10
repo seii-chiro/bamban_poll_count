@@ -64,7 +64,7 @@ const App = () => {
             {
               path: "poll-watcher",
               element: (
-                <ProtectedRoute allowedRoles={["pollwatcher"]}>
+                <ProtectedRoute allowedRoles={["poll-watcher"]}>
                   <PollWatcherLayout />
                 </ProtectedRoute>
               ),

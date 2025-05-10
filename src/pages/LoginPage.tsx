@@ -95,7 +95,7 @@ const LoginPage = () => {
             case "poll-watcher":
             case "leadpollwatcher":
             case "legalofficer":
-                setHasRedirected(true); // Prevent further redirects
+                setHasRedirected(true);
                 navigate(`/app/${role}`, { replace: true });
                 break;
             default:

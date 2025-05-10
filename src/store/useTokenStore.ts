@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type TokenState = {
-  token: string;
+  token: string | null;
   setToken: (token: string) => void;
   resetToken: () => void;
 };
@@ -10,9 +10,9 @@ type TokenState = {
 export const useTokenStore = create<TokenState>()(
   persist(
     (set) => ({
-      token: "",
+      token: "wqeqweqweqwewwq413123",
       setToken: (token) => set({ token }),
-      resetToken: () => set({ token: "" }),
+      resetToken: () => set({ token: null }),
     }),
     {
       name: "token-storage",

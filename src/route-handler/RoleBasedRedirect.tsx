@@ -1,25 +1,33 @@
-import useUserStore from "@/store/useUserStore"
-import { Navigate } from "react-router"
+import { Navigate } from "react-router";
+import useUserStore from "@/store/useUserStore";
+import { useTokenStore } from "@/store/useTokenStore";
 
 const RoleBasedRedirect = () => {
-    const role = useUserStore()?.role
+    const { role } = useUserStore();
+    const { token } = useTokenStore();
 
+    // If there's no token or role, redirect to login
+    if (!token || !role) {
+        return <Navigate to="/login" replace />;
+    }
+
+    // Role-based redirection
     switch (role) {
         case "admin":
-            return <Navigate to="/admin" replace />
+            return <Navigate to="/app/admin" replace />;
         case "candidate":
-            return <Navigate to="/candidate" replace />
+            return <Navigate to="/app/candidate" replace />;
         case "leadpollwatcher":
-            return <Navigate to="/lead-poll-watcher" replace />
+            return <Navigate to="/app/lead-poll-watcher" replace />;
         case "legalofficer":
-            return <Navigate to="/legal-officer" replace />
+            return <Navigate to="/app/legal-officer" replace />;
         case "pollwatcher":
-            return <Navigate to="/poll-watcher" replace />
+            return <Navigate to="/app/poll-watcher" replace />;
         case "superadmin":
-            return <Navigate to="/superadmin" replace />
+            return <Navigate to="/app/superadmin" replace />;
         default:
-            return <Navigate to="/login" replace />
+            return <Navigate to="/app/login" replace />;
     }
-}
+};
 
 export default RoleBasedRedirect;

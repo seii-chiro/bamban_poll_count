@@ -17,62 +17,77 @@ import Report from "./pages/Report"
 
 const App = () => {
   const router = createBrowserRouter([
-    {
-      path: "*",
-      element: <div>404</div>
-    },
-    {
-      path: "/",
-      element: <LandingPage />
-    },
-    {
-      path: "/login",
-      element: <LoginPage />
-    },
+    { path: "*", element: <div>404</div> },
+    { path: "/", element: <LandingPage /> },
+    { path: "/login", element: <LoginPage /> },
+
     {
       path: "/report",
       element: <Report />
     },
     {
       path: "/app",
-      element: <ProtectedRoute />,
+      element: <ProtectedRoute allowedRoles={["admin", "superadmin", "candidate", "pollwatcher", "leadpollwatcher", "legalofficer"]} />,
       children: [
         {
           element: <RootLayout />,
           children: [
-            {
-              index: true,
-              element: <RoleBasedRedirect />
-            },
+            { index: true, element: <RoleBasedRedirect /> },
+
             {
               path: "admin",
-              element: <Administrator />
+              element: (
+                <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
+                  <Administrator />
+                </ProtectedRoute>
+              ),
             },
             {
               path: "candidate",
-              element: <Candidate />
+              element: (
+                <ProtectedRoute allowedRoles={["candidate"]}>
+                  <Candidate />
+                </ProtectedRoute>
+              ),
             },
             {
               path: "lead-poll-watcher",
-              element: <LeadPollWatcherLayout />
+              element: (
+                <ProtectedRoute allowedRoles={["leadpollwatcher"]}>
+                  <LeadPollWatcherLayout />
+                </ProtectedRoute>
+              ),
             },
             {
               path: "legal-officer",
-              element: <LegalOfficer />
+              element: (
+                <ProtectedRoute allowedRoles={["legalofficer"]}>
+                  <LegalOfficer />
+                </ProtectedRoute>
+              ),
             },
             {
               path: "poll-watcher",
-              element: <PollWatcherLayout />
+              element: (
+                <ProtectedRoute allowedRoles={["pollwatcher"]}>
+                  <PollWatcherLayout />
+                </ProtectedRoute>
+              ),
             },
             {
               path: "superadmin",
-              element: <SuperAdministratorLayout />
+              element: (
+                <ProtectedRoute allowedRoles={["superadmin"]}>
+                  <SuperAdministratorLayout />
+                </ProtectedRoute>
+              ),
             },
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     },
-  ])
+  ]);
+
 
   return (
     <>

@@ -11,6 +11,7 @@ import LegalOfficer from "./layout/LegalOfficer"
 import PollWatcherLayout from "./layout/PollWatcherLayout"
 import SuperAdministratorLayout from "./layout/SuperAdministratorLayout"
 import LandingPage from "@/pages/LandingPage"
+import { Toaster } from 'sonner'
 
 const App = () => {
   const router = createBrowserRouter([
@@ -63,9 +64,12 @@ const App = () => {
   ])
 
   return (
-    <Suspense fallback={<Spinner />} >
-      <RouterProvider router={router} />
-    </Suspense>
+    <>
+      <Toaster richColors position="top-right" />
+      <Suspense fallback={<Spinner />} >
+        <RouterProvider router={router} />
+      </Suspense>
+    </>
   )
 }
 

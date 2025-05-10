@@ -12,6 +12,7 @@ import PollWatcherLayout from "./layout/PollWatcherLayout"
 import SuperAdministratorLayout from "./layout/SuperAdministratorLayout"
 import LandingPage from "@/pages/LandingPage"
 import { Toaster } from 'sonner'
+import ProtectedRoute from "./route-handler/ProtectedRoute"
 
 const App = () => {
   const router = createBrowserRouter([
@@ -29,36 +30,41 @@ const App = () => {
     },
     {
       path: "/app",
-      element: <RootLayout />,
+      element: <ProtectedRoute />,
       children: [
         {
-          index: true,
-          element: <RoleBasedRedirect />
-        },
-        {
-          path: "admin",
-          element: <Administrator />
-        },
-        {
-          path: "candidate",
-          element: <Candidate />
-        },
-        {
-          path: "lead-poll-watcher",
-          element: <LeadPollWatcherLayout />
-        },
-        {
-          path: "legal-officer",
-          element: <LegalOfficer />
-        },
-        {
-          path: "poll-watcher",
-          element: <PollWatcherLayout />
-        },
-        {
-          path: "superadmin",
-          element: <SuperAdministratorLayout />
-        },
+          element: <RootLayout />,
+          children: [
+            {
+              index: true,
+              element: <RoleBasedRedirect />
+            },
+            {
+              path: "admin",
+              element: <Administrator />
+            },
+            {
+              path: "candidate",
+              element: <Candidate />
+            },
+            {
+              path: "lead-poll-watcher",
+              element: <LeadPollWatcherLayout />
+            },
+            {
+              path: "legal-officer",
+              element: <LegalOfficer />
+            },
+            {
+              path: "poll-watcher",
+              element: <PollWatcherLayout />
+            },
+            {
+              path: "superadmin",
+              element: <SuperAdministratorLayout />
+            },
+          ]
+        }
       ]
     },
   ])

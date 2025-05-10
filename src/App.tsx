@@ -10,6 +10,7 @@ import LeadPollWatcherLayout from "./layout/LeadPollWatcherLayout"
 import LegalOfficer from "./layout/LegalOfficer"
 import PollWatcherLayout from "./layout/PollWatcherLayout"
 import SuperAdministratorLayout from "./layout/SuperAdministratorLayout"
+import LandingPage from "@/pages/LandingPage" // <- You’ll need to create this
 
 const App = () => {
   const router = createBrowserRouter([
@@ -18,12 +19,16 @@ const App = () => {
       element: <div>404</div>
     },
     {
+      path: "/",
+      element: <LandingPage /> 
+    },
+    {
       path: "/login",
       element: <LoginPage />
     },
     {
-      path: "/",
-      element: <RootLayout />,
+      path: "/app",
+      element: <RootLayout />, 
       children: [
         {
           index: true,

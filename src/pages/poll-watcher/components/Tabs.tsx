@@ -7,7 +7,7 @@ const tabs = ['Election Day', 'Reports', 'My Account', 'Sign Out'];
 type Props = {
     activeTab: string;
     setActiveTab: React.Dispatch<SetStateAction<string>>;
-    onLogout: () => void; // 🔐 new prop
+    onLogout: () => void; 
 };
 
 const Tabs = ({ activeTab, setActiveTab, onLogout }: Props) => {

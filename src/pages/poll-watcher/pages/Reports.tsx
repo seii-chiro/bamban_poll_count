@@ -68,40 +68,40 @@ const Reports = () => {
                             <div>
                                 <div className="flex flex-col ml-auto justify-end w-32 md:w-56 gap-1 md:gap-0">
                                     <p className="text-gray-500">Precinct ID:</p>
-                                    <p className="flex-1 p-2 border border-gray-200 rounded-md text-center font-medium">{selectedPrecinct.precinct_id}</p>
+                                    <p className="flex-1 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{selectedPrecinct.precinct_id}</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Name:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.name}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.name}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">ACM ID:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.acm_id}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.acm_id}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Province:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.province}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.province}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Municipality:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.municipality}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.municipality}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Barangay:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.brgy}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.brgy}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Polling Center:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.polling_center}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.polling_center}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Cluster Precinct:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.cluster_prec}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.cluster_prec}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Registered Voters:</p>
-                                        <p className="flex-1 p-2 border border-gray-200 rounded-md text-gray-500 font-medium">{selectedPrecinct.reg_voters}</p>
+                                        <p className="flex-1 p-2 border border-gray-200 rounded-md md:text-[16px] text-gray-500 font-medium">{selectedPrecinct.reg_voters}</p>
                                     </div>
                                 </div>
                             </div>

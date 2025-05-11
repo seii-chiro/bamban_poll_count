@@ -5,7 +5,7 @@ import { useTokenStore } from "@/store/useTokenStore";
 import useUserStore from "@/store/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { FaUsers, FaUserCheck, FaVoteYea, FaUserClock, FaChartPie, FaUserShield } from "react-icons/fa";
+import { FaUsers, FaUserCheck, FaVoteYea, FaUserClock, FaChartPie, FaUserShield, FaBars } from "react-icons/fa";
 
 const Administrator = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,13 +93,20 @@ const Administrator = () => {
 
     return (
     <div className="flex">
-      {/* Sidebar */}
-      <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+        <button
+            onClick={() => setIsSidebarOpen(prev => !prev)}
+            className="fixed top-4 left-4 z-50 text-white bg-[#275316] p-2 rounded-md shadow"
+            >
+            <FaBars size={20} />
+        </button>
 
-      {/* Main Content Area */}
-      <div className={`flex-1 p-4 md:px-20 md:py-10 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'}`}>
-        <div className="space-y-4 md:space-y-6 p-4 md:px-20 md:py-10">
-          <div className="flex justify-between items-center">
+        {/* Sidebar */}
+        <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+
+        {/* Main Content Area */}
+        <div className={`flex-1 p-4 md:px-20 md:py-10 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'}`}>
+            <div className="space-y-4 md:space-y-6 p-4 md:px-20 md:py-10">
+            <div className="flex justify-between items-center">
                 <h1 className="text-[#275316] text-3xl font-bold">Dashboard</h1>
                 <button
                     onClick={() => setIsModalOpen(true)}

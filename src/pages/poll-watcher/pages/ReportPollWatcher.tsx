@@ -1,12 +1,13 @@
 import { getCandidate, getDashboardSummary, getPollWatcher } from "@/pages/admin/queries";
 import { useTokenStore } from "@/store/useTokenStore";
+import useUserStore from "@/store/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 const ReportPollWatcher = () => {
     const token = useTokenStore()?.token;
     const [selectedPollWatcher, setSelectedPollWatcher] = useState<string>("");
-
+    const { firstName, lastName, clustered_prec_precincts } = useUserStore();
     const { data: userData } = useQuery({
         queryKey: ["user"],
         queryFn: () => getPollWatcher(token ?? ''),
@@ -40,7 +41,7 @@ const ReportPollWatcher = () => {
                         {selectedUser && (
                             <option key={selectedUser.id} value={selectedUser.id}>
                                 <div className="mb-2 text-base font-semibold text-[#275316]">
-                                {selectedUser?.clustered_prec_precincts[0]?.clustered_prec}{selectedUser.clustered_prec_precincts[0]?.pollplace} {selectedUser.clustered_prec_precincts[0]?.brgy_name && `BRGY. ${selectedUser.clustered_prec_precincts[0]?.brgy_name},`} {selectedUser.clustered_prec_precincts[0]?.mun_name && `${selectedUser?.clustered_prec_precincts[0]?.mun_name},`} {selectedUser.clustered_prec_precincts[0]?.prv_name}
+                                {clustered_prec_precincts?.[0]?.clustered_prec}{selectedUser.clustered_prec_precincts?.[0]?.pollplace} {selectedUser.clustered_prec_precincts?.[0]?.brgy_name && `BRGY. ${selectedUser.clustered_prec_precincts?.[0]?.brgy_name},`} {selectedUser.clustered_prec_precincts?.[0]?.mun_name && `${clustered_prec_precincts?.[0]?.mun_name},`} {selectedUser.clustered_prec_precincts?.[0]?.prv_name}
                                 </div>
                             </option>
                         )}
@@ -49,62 +50,63 @@ const ReportPollWatcher = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-6 items-start">
+                 <div className="text-lg font-semibold">
+                    Logged in as: {firstName} {lastName}
+                </div>
                 {/* Precinct Details and Voter Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     {/* Precinct Details */}
-                    {selectedUser ? (
                         <div className="border border-gray-300 p-4 rounded-md shadow-2xs hover:shadow-md bg-white text-sm space-y-2">
                             <div>
                                 <div className="flex flex-col ml-auto justify-end w-32 md:w-56 gap-1 md:gap-0">
                                     <p className="text-gray-500">Precinct ID:</p>
-                                    <p className="flex-1 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{selectedUser?.clustered_prec_precincts[0]?.clustered_prec}</p>
+                                    <p className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.acm_id}</p>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Poll Watcher:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.clustered_prec ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.first_name} {selectedUser?.last_name}</p>
+                                        <div className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">
+                                            {firstName} {lastName}
+                                        </div>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">ACM ID:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.clustered_prec ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.clustered_prec_precincts[0]?.acm_id}</p>
+                                        <p className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.acm_id}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Province:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.clustered_prec ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.clustered_prec_precincts[0]?.prv_name}</p>
+                                        <p className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.prv_name}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Municipality:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.clustered_prec ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.clustered_prec_precincts[0]?.mun_name}</p>
+                                        <p className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.mun_name}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Barangay:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.brgy_name ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.clustered_prec_precincts[0]?.brgy_name}</p>
+                                        <p className="flex-1 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.brgy_name}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Polling Center:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.clustered_prec ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.clustered_prec_precincts[0]?.pollplace}</p>
+                                        <p className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.pollplace}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Cluster Precinct:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.clustered_prec ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.clustered_prec_precincts[0]?.clustered_prec}</p>
+                                        <p className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.clustered_prec}</p>
                                     </div>
                                     <div className="flex flex-col gap-1 md:gap-0">
                                         <p className="text-gray-500">Registered Voters:</p>
-                                        <p className={`flex-1 ${selectedUser?.clustered_prec_precincts[0]?.clustered_prec ? 'p-2' : 'p-6'} border border-gray-200 rounded-md text-center md:text-[16px] font-medium`}>{selectedUser?.clustered_prec_precincts[0]?.registered_voters}</p>
+                                        <p className="flex-1 h-10 p-2 border border-gray-200 rounded-md text-center md:text-[16px] font-medium">{clustered_prec_precincts?.[0]?.registered_voters}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    ) : (
-                        <div className="text-gray-400 italic">No precinct selected.</div>
-                    )}
 
                     {/* Voter Stats */}
                     <div className="space-y-2">
                         <div className="flex justify-between items-center border border-gray-300 hover:bg-[#D9F2D0] hover:shadow-md py-4 px-2 md:px-8 rounded-md shadow-2xs">
                             <span className="text-gray-600 font-semibold text-sm md:text-[16px]">NO. OF REGISTERED VOTERS</span>
                             <span className="font-bold text-xl text-[#51A434]">
-                                {(selectedUser?.clustered_prec_precincts[0]?.registered_voters || 0).toLocaleString()}
+                                {(clustered_prec_precincts?.[0]?.registered_voters || 0).toLocaleString()}
                             </span>
                         </div>
 

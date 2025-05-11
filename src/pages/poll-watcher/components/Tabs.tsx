@@ -40,7 +40,7 @@ const Tabs = ({ activeTab, setActiveTab, onLogout }: Props) => {
     const handleLogoutConfirm = () => {
         setShowLogoutModal(false);
         onLogout();
-        reset()
+        // reset()
     };
 
     return (

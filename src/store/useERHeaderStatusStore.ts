@@ -32,7 +32,7 @@ export const useERHeaderStatusStore = create(
     }),
     {
       name: "er-header-status-store",
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

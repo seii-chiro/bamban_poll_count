@@ -278,16 +278,16 @@ const Administrator = () => {
                                         {
                                             pollwatcher?.filter(item =>
                                             item.groups?.includes("poll-watcher") &&
-                                            item.clusterd_prec?.clustered_prec
+                                            item.clustered_prec
                                             )?.length ? (
                                             [...pollwatcher]
                                                 .filter(item =>
                                                 item.groups?.includes("poll-watcher") &&
-                                                item.clusterd_prec?.clustered_prec
+                                                item.clustered_prec_precincts[0]?.clustered_prec
                                                 )
                                                 .sort((a, b) =>
-                                                getVotesByCandidateName(b.clusterd_prec?.clustered_prec) -
-                                                getVotesByCandidateName(a.clusterd_prec?.clustered_prec)
+                                                getVotesByCandidateName(b.clustered_prec_precincts[0]?.clustered_prec) -
+                                                getVotesByCandidateName(a.clustered_prec_precincts[0]?.clustered_prec)
                                                 )
                                                 .map((item, index) => (
                                                 <tr key={index} className="hover:bg-[#D9F2D0]">
@@ -300,10 +300,10 @@ const Administrator = () => {
                                                         : "Unnamed Watcher"}
                                                     </td>
                                                     <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                    {item.clusterd_prec?.clustered_prec}
+                                                    {item.clustered_prec_precincts[0]?.clustered_prec}
                                                     </td>
                                                     <td className="px-4 py-3 border-r border-b border-gray-300 font-semibold text-center">
-                                                    {getVotesByCandidateName(item.clusterd_prec?.clustered_prec).toLocaleString()}
+                                                    {getVotesByCandidateName(item.clustered_prec_precincts[0]?.clustered_prec).toLocaleString()}
                                                     </td>
                                                 </tr>
                                                 ))

@@ -35,7 +35,7 @@ interface UserState {
   firstName: string | null;
   lastName: string | null;
   role: Role;
-  clustered_prec_precincts: PollingPlace | null;
+  clustered_prec_precincts: PollingPlace[] | null;
   setUser: (user: {
     id: number;
     email: string;
@@ -68,7 +68,7 @@ const useUserStore = create<UserState>()(
           id: null,
         }),
       setPollingPlace: (pollingPlace) =>
-        set({ clustered_prec_precincts: pollingPlace }),
+        set({ clustered_prec_precincts: [pollingPlace] }),
       clearPollingPlace: () => set({ clustered_prec_precincts: null }),
     }),
     {

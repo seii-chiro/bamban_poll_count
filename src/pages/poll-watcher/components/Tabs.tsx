@@ -1,19 +1,21 @@
 import { useState, useEffect, useRef, type SetStateAction } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 import LogoutConfirmModal from './LogoutConfirm';
+import { useERHeaderStatusStore } from '@/store/useERHeaderStatusStore';
 
 const tabs = ['Election Day', 'Reports', 'My Account', 'Sign Out'];
 
 type Props = {
     activeTab: string;
     setActiveTab: React.Dispatch<SetStateAction<string>>;
-    onLogout: () => void; 
+    onLogout: () => void;
 };
 
 const Tabs = ({ activeTab, setActiveTab, onLogout }: Props) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const reset = useERHeaderStatusStore()?.reset
 
     // Close dropdown on outside click
     useEffect(() => {
@@ -37,7 +39,8 @@ const Tabs = ({ activeTab, setActiveTab, onLogout }: Props) => {
 
     const handleLogoutConfirm = () => {
         setShowLogoutModal(false);
-        onLogout(); 
+        onLogout();
+        reset()
     };
 
     return (

@@ -33,13 +33,26 @@ const ERHeader = () => {
     const userId = useUserStore()?.id
     const [images, setImages] = useState<Record<number, string | null>>({});
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-    const { setERHeaderStatus, setVpsErHeader, setERHeaderSubmitted } = useERHeaderStatusStore()
+    const { setERHeaderStatus, setVpsErHeader, setERHeaderSubmitted } = useERHeaderStatusStore();
+    const { clustered_prec_precincts } = useUserStore();
+
+    const pollWatcherLabel = ["Precinct ID", "ACM ID", "Province", "City/Municipality", "Barangay", "Polling Center", "Clustered Precinct", "Registered Voters"]
+    const sampleValue = [
+        clustered_prec_precincts?.[0]?.acm_id,
+        clustered_prec_precincts?.[0]?.acm_id,
+        "TARLAC",
+        "BAMBAN",
+        clustered_prec_precincts?.[0]?.brgy_name,
+        clustered_prec_precincts?.[0]?.pollplace,
+        clustered_prec_precincts?.[0]?.clustered_prec,
+        clustered_prec_precincts?.[0]?.registered_voters
+    ]
 
     const [formData, setFormData] = useState<ERHeader>({
         pic1_b64: "",
         pic2_b64: "",
         pic3_b64: "",
-        clustered_prec: "test",
+        clustered_prec: "",
         no_ballots_casted: null,
         no_ballots_diverted: null,
         no_reg_voters: null,
@@ -48,6 +61,8 @@ const ERHeader = () => {
         latitude: null,
         longitude: null,
     })
+
+    console.log(formData)
 
     useEffect(() => {
         if (!navigator.geolocation) {
@@ -102,6 +117,15 @@ const ERHeader = () => {
         }
     }, [userId])
 
+    useEffect(() => {
+        if (clustered_prec_precincts?.[0]?.clustered_prec) {
+            setFormData(prev => ({
+                ...prev,
+                clustered_prec: clustered_prec_precincts?.[0]?.clustered_prec
+            }))
+        }
+    }, [clustered_prec_precincts])
+
     const submitMutation = useMutation({
         mutationKey: ['submit', 'er-header'],
         mutationFn: () => postERHeader(formData),
@@ -110,6 +134,7 @@ const ERHeader = () => {
             setERHeaderStatus("submitted")
             setVpsErHeader(data?.id)
             setERHeaderSubmitted(true)
+            navigate("/app/poll-watcher")
         },
         onError: (err) => toast.error(err.message)
     })
@@ -119,9 +144,6 @@ const ERHeader = () => {
     };
 
     const hasAtLeastOneImage = Object.values(images).some(image => image !== null);
-
-    const pollWatcherLabel = ["Precinct ID", "ACM ID", "Province", "City/Municipality", "Barangay", "Polling Center", "Clustered Precinct", "Registered Voters"]
-    const sampleValue = ["69020001", "69020001", "TARLAC", "BAMBAN", "ANUPUL", "BRGY. ANUPUL, BAMBAN, TARLAC​", "0001A, 0002A, 0003A", "685"]
 
     return (
         <div className='w-full flex flex-col gap-5 p-5'>

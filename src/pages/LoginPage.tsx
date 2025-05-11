@@ -50,7 +50,7 @@ type UserCredentials = {
 
 const LoginPage = () => {
     const navigate = useNavigate()
-    const { email, role, setUser } = useUserStore()
+    const { email, role, setUser, setPollingPlace } = useUserStore()
     const setToken = useTokenStore()?.setToken
     const [showPassword, setShowPassword] = useState(false)
     const [userCredentials, setUserCredentials] = useState<UserCredentials>({
@@ -100,6 +100,7 @@ const LoginPage = () => {
                 lastName: res.last_name,
                 role: role as Role,
             });
+            setPollingPlace(res.clustered_prec_precincts)
 
             if (role) toast.success(`Welcome ${res.first_name || res.email}!`);
         },

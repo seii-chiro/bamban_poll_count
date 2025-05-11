@@ -11,12 +11,31 @@ export type Role =
   | "user"
   | null;
 
+export interface PollingPlace {
+  acm_id: string;
+  brgy_name: string;
+  clustered_prec: string;
+  created_at: string;
+  created_by: string;
+  id: number;
+  mun_name: string;
+  notes: string | null;
+  pollplace: string;
+  prv_name: string;
+  record_status: string;
+  reg_name: string;
+  registered_voters: number;
+  updated_at: string;
+  updated_by: string | null;
+}
+
 interface UserState {
   id: number | null;
   email: string | null;
   firstName: string | null;
   lastName: string | null;
   role: Role;
+  clustered_prec_precincts: PollingPlace | null;
   setUser: (user: {
     id: number;
     email: string;
@@ -25,6 +44,8 @@ interface UserState {
     role: Role;
   }) => void;
   clearUser: () => void;
+  setPollingPlace: (pollingPlace: PollingPlace) => void;
+  clearPollingPlace: () => void;
 }
 
 const useUserStore = create<UserState>()(
@@ -35,6 +56,7 @@ const useUserStore = create<UserState>()(
       firstName: null,
       lastName: null,
       role: null,
+      clustered_prec_precincts: null,
       setUser: ({ email, firstName, lastName, role, id }) =>
         set({ email, firstName, lastName, role, id }),
       clearUser: () =>
@@ -45,6 +67,9 @@ const useUserStore = create<UserState>()(
           role: null,
           id: null,
         }),
+      setPollingPlace: (pollingPlace) =>
+        set({ clustered_prec_precincts: pollingPlace }),
+      clearPollingPlace: () => set({ clustered_prec_precincts: null }),
     }),
     {
       name: "user-store",

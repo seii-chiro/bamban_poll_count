@@ -4,20 +4,32 @@ import StatusMark from "../components/StatusMark";
 import { useNavigate } from "react-router";
 import { useERHeaderStatusStore } from "@/store/useERHeaderStatusStore";
 import clsx from "clsx"
+import useUserStore from "@/store/useUserStore";
 
 const ElectionDay = () => {
     const navigate = useNavigate()
     const { erHeaderStatus, erHeaderSubmitted } = useERHeaderStatusStore()
+    const { clustered_prec_precincts, firstName, lastName } = useUserStore()
 
     const pollWatcherLabel = ["Name", "Precinct ID", "ACM ID", "Province", "City/Municipality", "Barangay", "Polling Center", "Clustered Precinct", "Registered Voters"]
-    const sampleValue = ["Juan Dela Cruz​", "69020001", "69020001", "TARLAC", "BAMBAN", "ANUPUL", "BRGY. ANUPUL, BAMBAN, TARLAC​", "0001A, 0002A, 0003A", "685"]
+    const sampleValue = [
+        `${firstName} ${lastName}`,
+        clustered_prec_precincts?.[0]?.acm_id,
+        clustered_prec_precincts?.[0]?.acm_id,
+        "TARLAC",
+        "BAMBAN",
+        clustered_prec_precincts?.[0]?.brgy_name,
+        clustered_prec_precincts?.[0]?.pollplace,
+        clustered_prec_precincts?.[0]?.clustered_prec,
+        clustered_prec_precincts?.[0]?.registered_voters
+    ]
 
     return (
         <div className="w-full p-2 lg:p-5">
             <div className="flex flex-col gap-4">
                 <h3 className="font-semibold text-xl">Select Precinct</h3>
                 <div>
-                    <Select options={["A", "B", "C"]} />
+                    <Select options={[`${clustered_prec_precincts?.[0]?.acm_id} - ${clustered_prec_precincts?.[0]?.pollplace}`]} placeholder={`${clustered_prec_precincts?.[0]?.acm_id} - ${clustered_prec_precincts?.[0]?.pollplace}`} />
                 </div>
                 <div className="flex flex-col lg:flex-row gap-1 lg:gap-4 bg-[#D9F2D0] p-4 rounded">
                     {/* Mobile/Stacked layout */}
@@ -46,7 +58,7 @@ const ElectionDay = () => {
                 </div>
                 <div className="w-full">
                     <div className="w-full flex flex-col gap-1">
-                        <div className="w-full flex items-center gap-1 lg:gap-4">
+                        <div className={clsx('w-full flex items-center gap-1 lg:gap-4', erHeaderSubmitted ? 'pointer-events-none cursor-not-allowed opacity-50' : '')}>
                             <StatusButton label="Election Result (ER) Header​" status={erHeaderStatus} onClick={() => navigate("er-header")} />
                             <StatusMark status={erHeaderStatus} />
                         </div>

@@ -195,12 +195,23 @@ const LoginPage = () => {
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-[#275317] text-white py-2 px-4 rounded-md hover:bg-[#304229] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                    >
-                        Login
-                    </button>
+                    {
+                        loginMutation.isPending ? (
+                            <button
+                                type="button"
+                                className="w-full bg-[#275317] text-white py-2 px-4 rounded-md hover:bg-[#304229] focus:outline-none opacity-30 transition-colors"
+                            >
+                                Logging in...
+                            </button>
+                        ) : (
+                            <button
+                                type="submit"
+                                className="w-full bg-[#275317] text-white py-2 px-4 rounded-md hover:bg-[#304229] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                            >
+                                Login
+                            </button>
+                        )
+                    }
                 </form>
             </div>
         </div>

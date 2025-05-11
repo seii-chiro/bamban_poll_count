@@ -47,19 +47,19 @@ export interface Candidate {
 export type ClusteredPrecinct = {
     id: number;
     created_by: string;
-    updated_by: string;
+    updated_by: string | null;
     record_status: string;
     created_at: string; // ISO datetime string
     updated_at: string; // ISO datetime string
-    acm_id: number;
+    acm_id: string; // If this is a string
     reg_name: string;
-    prv_name: string;
-    mun_name: string;
-    brgy_name: string;
+    prv_name: string | null;
+    mun_name: string | null;
+    brgy_name: string | null;
     pollplace: string;
     clustered_prec: string;
     registered_voters: number;
-    notes: string;
+    notes: string | null;
 };
 
 export type User = {
@@ -67,10 +67,11 @@ export type User = {
     email: string;
     first_name: string;
     last_name: string;
+    clustered_prec: string;
     groups: string[];
     user_permissions: string[];
-  all_permissions: string; // still a string based on latest JSON
-  clusterd_prec: ClusteredPrecinct; // nested object
+    all_permissions: string;
+    clustered_prec_precincts: ClusteredPrecinct[];
 };
 
 

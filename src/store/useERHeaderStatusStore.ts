@@ -10,6 +10,7 @@ interface ERHeaderStatusState {
   setERHeaderStatus: (status: ERHeaderStatus) => void;
   setERHeaderSubmitted: (submitted: boolean) => void;
   setVpsErHeader: (value: number) => void;
+  reset: () => void;
 }
 
 export const useERHeaderStatusStore = create(
@@ -22,6 +23,12 @@ export const useERHeaderStatusStore = create(
       setERHeaderStatus: (status) => set({ erHeaderStatus: status }),
       setERHeaderSubmitted: (submitted) =>
         set({ erHeaderSubmitted: submitted }),
+      reset: () =>
+        set({
+          vpsErHeader: null,
+          erHeaderStatus: "not_submitted",
+          erHeaderSubmitted: false,
+        }),
     }),
     {
       name: "er-header-status-store",
